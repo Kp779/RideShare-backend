@@ -71,7 +71,7 @@ exports.userOtpSend = async (req, res) => {
                 const mailOptions = {
                     from: process.env.EMAIL,
                     to: email,
-                    subject: "Sending Eamil For Otp Validation",
+                    subject: "Sending Email For Otp Validation",
                     text: `OTP:- ${OTP}`
                 }
 
@@ -96,7 +96,7 @@ exports.userOtpSend = async (req, res) => {
                 const mailOptions = {
                     from: process.env.EMAIL,
                     to: email,
-                    subject: "Sending Eamil For Otp Validation",
+                    subject: "Sending Email For Otp Validation",
                     text: `OTP:- ${OTP}`
                 }
 
@@ -134,7 +134,8 @@ exports.userLogin = async(req,res)=>{
 
             // token generate
             const token = await preuser.generateAuthtoken();
-           res.status(200).json({message:"User Login Succesfully Done",userToken:token});
+            console.log("jwt token is this:",token);
+           res.status(200).json({message:"Login Succesfully Done. Taking you to the dashboard",userToken:token});
 
         }else{
             res.status(400).json({error:"Invalid Otp"})
