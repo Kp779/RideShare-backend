@@ -1,6 +1,7 @@
 const users = require("../models/userSchema");
 const userotp = require("../models/userOtp");
 const nodemailer = require("nodemailer");
+const Rides = require("../models/newRides");
 
 
 // email config
@@ -40,6 +41,16 @@ exports.userregister = async (req, res) => {
     }
 
 };
+
+//get user api
+exports.getRegisteredUsers=async (req, res) => {
+    try {
+      const user = await users.find();
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 
 
 
@@ -144,3 +155,58 @@ exports.userLogin = async(req,res)=>{
         res.status(400).json({ error: "Invalid Details", error })
     }
 }
+
+exports.newRideCreation=async (req, res) => {
+    try {
+      const Ride = await Rides.find();
+      res.json(Ride);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  exports.newRide = async (req, res) => {
+    const { name, start, destination, route, startTime } = req.body;
+  
+    const newRide = new Rides({ name, start, destination, route, startTime });
+  
+    try {
+      const savedRide = await newRide.save();
+      res.json(savedRide);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  exports.editRide=async (req, res) => {
+    const { name, start, destination, route, startTime } = req.body;
+  
+    try {
+      const updateRide = await Rides.findByIdAndUpdate(
+        req.params.id,
+        { name,start, destination, route, startTime },
+        { new: true }
+      );
+      res.json(updatedRide);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  exports.deleteRide = async (req, res) => {
+    try {
+      const deletedRide = await Rides.findByIdAndDelete(req.params.id);
+      res.json(deletedRide);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+  
+  exports.deleteUser = async (req, res) => {
+    try {
+      const deletedUser = await users.findByIdAndDelete(req.params.id);
+      res.json(deletedUser);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
