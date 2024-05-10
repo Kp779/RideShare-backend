@@ -210,3 +210,22 @@ exports.newRideCreation=async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   };
+
+  exports.getUserByID = async (req,res) =>{
+        const id = req.params.id;
+        users.findById({_id:id})
+        .then(userFound => res.json(userFound))
+        .catch(err => res.json(err));
+  }
+
+  exports.updateUser = async(req,res) =>{
+    const id = req.params.id;
+    users.findByIdAndUpdate({_id:id},{
+        fname:req.body.fname , 
+        email: req.body.email , 
+        role: req.body.role})
+    .then(users => res.json(users))
+    .catch(err => res.json(err));
+  }
+
+ 

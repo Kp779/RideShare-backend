@@ -6,6 +6,8 @@ const controllers = require("../controllers/userControllers");
 // User registration and user data
 router.get("/user/register", controllers.getRegisteredUsers)
 router.post("/user/register",controllers.userregister);
+router.get("/user/register/:id",controllers.getUserByID)
+router.put("/user/update/:id",controllers.updateUser)
 router.delete("/user/register/:id",controllers.deleteUser)
 
 // User login management routes
