@@ -226,6 +226,62 @@ exports.newRideCreation=async (req, res) => {
         role: req.body.role})
     .then(users => res.json(users))
     .catch(err => res.json(err));
-  }
+  };
 
- 
+ exports.requestRide = async(req,res) => {
+  const {fname} =req.body;
+  // console.log(fname)
+  try{
+    const ride = await Rides.findOne({ name: fname });
+    // console.log(ride)
+    if(ride){
+      const authorName = ride.name;
+      console.log("author name is:",authorName);
+      const authorUser = await users.findOne({ fname: authorName });
+      // console.log("author user is:",authorUser);
+
+      if (authorUser) {
+        // Retrieve the email of the user
+        const authorUserEmail = authorUser.email;
+        console.log("ride request is to be sent on email:", authorUserEmail);
+
+        const mailOptions = {
+          from: process.env.EMAIL,
+          to: authorUserEmail,
+          subject: "Sending Email For Ride RequesT",
+          text: `
+          Do you approve of this ride request??
+          if you do please go ahead with email confirmation 
+          else reject.
+
+          Click the following link to comfirn/reject a ride request: 
+          
+          I hope you found your desired pool partner.
+          Enjoy ride!
+          
+          Regards,
+          RideShare Team`
+      }
+
+      tarnsporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log("error", error);
+            res.status(400).json({ error: "email not send" })
+        } else {
+            console.log("Email sent", info.response);
+            res.status(200).json({ message: "Email sent Successfully" })
+        }
+    })
+
+      } else {
+        res.status(404).json({ error: "User not found" });
+      }
+    } else {
+      res.status(404).json({ error: "Ride not found" });
+    }
+   
+    
+  } catch(error){
+
+  }
+ }

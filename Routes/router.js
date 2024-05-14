@@ -20,4 +20,6 @@ router.post("/user/ride",controllers.newRide)
 router.put("/user/ride/:id",controllers.editRide)
 router.delete("/user/ride/:id",controllers.deleteRide)
 
+router.post("/user/requestRide", controllers.requestRide)
+
 module.exports = router;
