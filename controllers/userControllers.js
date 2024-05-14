@@ -2,7 +2,8 @@ const users = require("../models/userSchema");
 const userotp = require("../models/userOtp");
 const nodemailer = require("nodemailer");
 const Rides = require("../models/newRides");
-
+const crypto = require('crypto');
+const { start } = require("repl");
 
 // email config
 const tarnsporter = nodemailer.createTransport({
@@ -244,34 +245,43 @@ exports.newRideCreation=async (req, res) => {
         // Retrieve the email of the user
         const authorUserEmail = authorUser.email;
         console.log("ride request is to be sent on email:", authorUserEmail);
-
-        const mailOptions = {
-          from: process.env.EMAIL,
-          to: authorUserEmail,
-          subject: "Sending Email For Ride RequesT",
-          text: `
-          Do you approve of this ride request??
-          if you do please go ahead with email confirmation 
-          else reject.
-
-          Click the following link to comfirn/reject a ride request: 
-          
-          I hope you found your desired pool partner.
-          Enjoy ride!
-          
-          Regards,
-          RideShare Team`
-      }
-
-      tarnsporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.log("error", error);
-            res.status(400).json({ error: "email not send" })
-        } else {
-            console.log("Email sent", info.response);
-            res.status(200).json({ message: "Email sent Successfully" })
+        
+        const randomToken = crypto.randomBytes(10).toString('hex');
+        const link = `http://localhost:3000/confirm-ride/${randomToken}`;
+      
+          // Continue with sending email
+          const mailOptions = {
+            from: process.env.EMAIL,
+            to: authorUserEmail,
+            subject: "Sending Email For Ride RequesT",
+            text: `
+            Do you approve of this ride request??
+            if you do please go ahead with email confirmation 
+            else reject.
+  
+            Click the given link to comfirn/reject a ride request: 
+            ${link}
+            
+            I hope you found your desired pool partner.
+            Enjoy ride!
+            
+            Regards,
+            RideShare Team`
         }
-    })
+  
+        tarnsporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+              console.log("error", error);
+              res.status(400).json({ error: "email not send" })
+          } else {
+              console.log("Email sent", info.response);
+              res.status(200).json({ message: "Email sent Successfully", randomToken: randomToken  })
+          }
+      })
+      
+      
+
+        
 
       } else {
         res.status(404).json({ error: "User not found" });
@@ -284,4 +294,25 @@ exports.newRideCreation=async (req, res) => {
   } catch(error){
 
   }
+ }
+
+ exports.getRideByID = async (req,res) =>{
+  const id = req.params.id;
+  // console.log("ride id: ",id)
+        Rides.findById({_id:id})
+        .then(rideFound => res.json(rideFound))
+        .catch(err => res.json(err));
+ }
+
+ exports.editRide = async (req,res) =>{
+  const id = req.params.id;
+    Rides.findByIdAndUpdate({_id:id},{
+        name:req.body.name , 
+        start: req.body.start,
+        destination: req.body.destination,
+        route: req.body.route,
+        startTime: req.body.time
+      })
+    .then(updatedride => res.json(updatedride))
+    .catch(err => res.json(err));
  }

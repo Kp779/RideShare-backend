@@ -17,7 +17,8 @@ router.post("/user/login",controllers.userLogin);
 // rides management routes
 router.get("/user/ride",controllers.newRideCreation)
 router.post("/user/ride",controllers.newRide)
-router.put("/user/ride/:id",controllers.editRide)
+router.get("/user/ride/:id",controllers.getRideByID)
+router.put("/user/rideUpdate/:id",controllers.editRide)
 router.delete("/user/ride/:id",controllers.deleteRide)
 
 router.post("/user/requestRide", controllers.requestRide)
