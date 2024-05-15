@@ -147,7 +147,9 @@ exports.userLogin = async(req,res)=>{
             // token generate
             const token = await preuser.generateAuthtoken();
             console.log("jwt token is this:",token);
-           res.status(200).json({message:"Login Succesfully Done. Taking you to the dashboard",userToken:token});
+           res.status(200).json({message:"Login Succesfully Done. Taking you to the dashboard",userToken:token,
+            loggedUser:preuser
+           });
 
         }else{
             res.status(400).json({error:"Invalid Otp"})
@@ -278,11 +280,6 @@ exports.newRideCreation=async (req, res) => {
               res.status(200).json({ message: "Email sent Successfully", randomToken: randomToken  })
           }
       })
-      
-      
-
-        
-
       } else {
         res.status(404).json({ error: "User not found" });
       }
