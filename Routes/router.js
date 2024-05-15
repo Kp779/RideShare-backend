@@ -22,5 +22,7 @@ router.put("/user/rideUpdate/:id",controllers.editRide)
 router.delete("/user/ride/:id",controllers.deleteRide)
 
 router.post("/user/requestRide", controllers.requestRide)
+router.post("/user/confirmRide", controllers.confirmRide)
+router.post("/user/rejectRide", controllers.rejectRide)
 
 module.exports = router;

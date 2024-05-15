@@ -313,3 +313,58 @@ exports.newRideCreation=async (req, res) => {
     .then(updatedride => res.json(updatedride))
     .catch(err => res.json(err));
  }
+
+ exports.confirmRide = async (req,res) => {
+  const {email} = req.body;
+  console.log("confirm ride:",email);
+
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: "Ride Request confirmed",
+    text: `
+    We are pleased to inform you that your ride
+    request has been accepted. Have a Safe Journey.
+    Enjoy your ride!
+    
+    Regards,
+    RideShare Team `
+}
+
+tarnsporter.sendMail(mailOptions, (error, info) => {
+  if (error) {
+      console.log("error", error);
+      res.status(400).json({ error: "email not send" })
+  } else {
+      console.log("Email sent", info.response);
+      res.status(200).json({ message: "Email sent Successfully" })
+  }
+})
+}
+
+exports.rejectRide = async (req,res) => {
+  const {email} = req.body;
+  console.log("confirm ride:",email);
+
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: "Ride Request denied",
+    text: `
+    We rgret to inform you that your ride
+    request was denied by the author. 
+    
+    Regards,
+    RideShare Team `
+}
+
+tarnsporter.sendMail(mailOptions, (error, info) => {
+  if (error) {
+      console.log("error", error);
+      res.status(400).json({ error: "email not send" })
+  } else {
+      console.log("Email sent", info.response);
+      res.status(200).json({ message: "Email sent Successfully" })
+  }
+})
+}
